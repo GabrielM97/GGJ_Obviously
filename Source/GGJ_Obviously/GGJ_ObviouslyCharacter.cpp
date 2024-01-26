@@ -8,8 +8,15 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GGJ_ObviouslyPlayerController.h"
 #include "InputActionValue.h"
+#include "InteractableComponent.h"
+#include "ObviouslyHud.h"
+#include "Components/SlateWrapperTypes.h"
 #include "Engine/LocalPlayer.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -38,6 +45,8 @@ AGGJ_ObviouslyCharacter::AGGJ_ObviouslyCharacter()
 	Mesh1P->CastShadow = false;
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+	
+	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
 
 }
 
@@ -55,6 +64,8 @@ void AGGJ_ObviouslyCharacter::BeginPlay()
 		}
 	}
 
+	World = GetWorld();
+	PC = static_cast<AGGJ_ObviouslyPlayerController*>( World->GetFirstPlayerController());
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -67,6 +78,8 @@ void AGGJ_ObviouslyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &AGGJ_ObviouslyCharacter::Interact);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AGGJ_ObviouslyCharacter::Move);
@@ -80,6 +93,51 @@ void AGGJ_ObviouslyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 	}
 }
 
+void AGGJ_ObviouslyCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	
+	FRotator CameraRot = FirstPersonCameraComponent->GetComponentRotation();
+	FVector Forward = UKismetMathLibrary::GetForwardVector(CameraRot);
+	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+	FVector End = Start + Forward * 250;
+
+	if (World)
+	{
+		World->LineTraceSingleByChannel(Out, Start, End, ECC_Visibility);
+		
+		if (!IsValid(PC))
+		{
+			return;
+		}
+		
+		if (Out.bBlockingHit)
+		{
+			InteractableComponent = Cast<UInteractableComponent>(Out.GetActor()->GetComponentByClass(UInteractableComponent::StaticClass()));
+			
+			if (!IsValid(InteractableComponent))
+			{
+				return;
+			}
+
+			if (!bIsGrabbing)
+			{
+				PC->Hud->SetInteractText( FText::FromString(FString::Printf(TEXT("Press 'E' to interact with %s"), *Out.GetActor()->GetName())));
+				PC->Hud->ToggleInteractUI(ESlateVisibility::SelfHitTestInvisible);
+			}
+		}
+		else
+		{
+			PC->Hud->ToggleInteractUI(ESlateVisibility::Collapsed);
+			InteractableComponent = nullptr;
+		}
+	}
+	
+	if(bIsGrabbing)
+	{
+		PhysicsHandle->SetTargetLocationAndRotation(End, CameraRot);
+	}
+}
 
 void AGGJ_ObviouslyCharacter::Move(const FInputActionValue& Value)
 {
@@ -105,6 +163,26 @@ void AGGJ_ObviouslyCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AGGJ_ObviouslyCharacter::Interact()
+{
+	if (!InteractableComponent || !Out.bBlockingHit)
+	{
+		return;
+	}
+
+	if (bIsGrabbing)
+	{
+		PhysicsHandle->ReleaseComponent();
+		InteractableComponent=nullptr;
+		bIsGrabbing = false;
+		return;
+	}
+	
+	InteractableComponent->Interact(this, Out.GetComponent(), Out.GetComponent()->GetComponentLocation(), Out.GetComponent()->GetComponentRotation());
+	PC->Hud->ToggleInteractUI(ESlateVisibility::Collapsed);
+	bIsGrabbing = true;
 }
 
 void AGGJ_ObviouslyCharacter::SetHasRifle(bool bNewHasRifle)

@@ -24,6 +24,9 @@ public:
 
 	UPROPERTY()
 	UPlayerHud* PlayerHud;
+
+	void SetInteractText(const FText& text);
+	void ToggleInteractUI(ESlateVisibility Visibility);
 protected:
 	virtual void BeginPlay() override;
 };

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerHud.generated.h"
 
+class UTextBlock;
 /**
  * 
  */
@@ -13,5 +14,8 @@ UCLASS()
 class GGJ_OBVIOUSLY_API UPlayerHud : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+public:
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* InteractionText;
 };

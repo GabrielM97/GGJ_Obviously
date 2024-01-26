@@ -7,6 +7,9 @@
 #include "Logging/LogMacros.h"
 #include "GGJ_ObviouslyCharacter.generated.h"
 
+class AGGJ_ObviouslyPlayerController;
+class UInteractableComponent;
+class UPhysicsHandleComponent;
 class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
@@ -37,6 +40,9 @@ class AGGJ_ObviouslyCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* InteractAction;
+
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
@@ -46,6 +52,8 @@ public:
 
 protected:
 	virtual void BeginPlay();
+
+	
 
 public:
 		
@@ -65,6 +73,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	bool GetHasRifle();
 
+	UPROPERTY()
+	UPhysicsHandleComponent* PhysicsHandle;
+
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -72,10 +83,24 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
-protected:
+	void Interact();
+	
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
+
+	virtual void Tick(float DeltaSeconds) override;
+
+	UPROPERTY()
+	UWorld* World;
+
+	bool bIsGrabbing = false;
+
+	UInteractableComponent* InteractableComponent;
+
+	FHitResult Out;
+
+	AGGJ_ObviouslyPlayerController* PC;
 
 public:
 	/** Returns Mesh1P subobject **/

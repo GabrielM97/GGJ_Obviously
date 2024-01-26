@@ -3,6 +3,7 @@
 
 #include "GGJ_ObviouslyPlayerController.h"
 #include "EnhancedInputSubsystems.h"
+#include "ObviouslyHud.h"
 
 void AGGJ_ObviouslyPlayerController::BeginPlay()
 {
@@ -16,4 +17,8 @@ void AGGJ_ObviouslyPlayerController::BeginPlay()
 
 		UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
 	}
+
+	Hud = Cast<AObviouslyHud>(GetHUD());
+
+	
 }
