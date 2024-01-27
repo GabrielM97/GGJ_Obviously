@@ -23,7 +23,6 @@ void UInteractableComponent::Interact(const AGGJ_ObviouslyCharacter* PlayerChara
 	switch (InteractionType) {
 	case EInteractionType::EPickup:
 		PlayerCharacter->PhysicsHandle->GrabComponentAtLocationWithRotation(Comp, NAME_None,  HitLocation, HitRotation);
-		bIsActive = true;
 		break;
 		
 	case EInteractionType::EPress:
