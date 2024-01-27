@@ -10,6 +10,14 @@
 class AGGJ_ObviouslyCharacter;
 class UWidgetComponent;
 
+UENUM(BlueprintType)
+enum class EInteractionType
+{
+	EPickup,
+	EPress,
+	EPressRandom
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GGJ_OBVIOUSLY_API UInteractableComponent : public UActorComponent
 {
@@ -22,6 +30,17 @@ public:
 
 	UPROPERTY()
 	UWidgetComponent* InteractWidget;
+
+	UPROPERTY(EditAnywhere)
+	EInteractionType InteractionType = EInteractionType::EPickup;
+
+	bool bPress = InteractionType == EInteractionType::EPickup;
+	
+	UPROPERTY(EditAnywhere, meta=(EditConditionHides = bPress ))
+	TArray<AActor*> Triggerables;
+
+	bool bIsActive = false;
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

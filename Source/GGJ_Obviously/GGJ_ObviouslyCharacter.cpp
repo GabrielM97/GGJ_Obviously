@@ -79,7 +79,7 @@ void AGGJ_ObviouslyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 		
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &AGGJ_ObviouslyCharacter::Interact);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AGGJ_ObviouslyCharacter::Interact);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AGGJ_ObviouslyCharacter::Move);
@@ -120,7 +120,7 @@ void AGGJ_ObviouslyCharacter::Tick(float DeltaSeconds)
 				return;
 			}
 
-			if (!bIsGrabbing)
+			if (!bIsGrabbing && !InteractableComponent->bIsActive)
 			{
 				PC->Hud->SetInteractText( FText::FromString(FString::Printf(TEXT("Press 'E' to interact with %s"), *Out.GetActor()->GetName())));
 				PC->Hud->ToggleInteractUI(ESlateVisibility::SelfHitTestInvisible);
@@ -182,7 +182,7 @@ void AGGJ_ObviouslyCharacter::Interact()
 	
 	InteractableComponent->Interact(this, Out.GetComponent(), Out.GetComponent()->GetComponentLocation(), Out.GetComponent()->GetComponentRotation());
 	PC->Hud->ToggleInteractUI(ESlateVisibility::Collapsed);
-	bIsGrabbing = true;
+	bIsGrabbing =  IsValid(PhysicsHandle->GrabbedComponent);
 }
 
 void AGGJ_ObviouslyCharacter::SetHasRifle(bool bNewHasRifle)

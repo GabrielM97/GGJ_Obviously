@@ -4,6 +4,8 @@
 #include "InteractableComponent.h"
 
 #include "GGJ_ObviouslyCharacter.h"
+#include "TriggerableInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 
 // Sets default values for this component's properties
@@ -18,7 +20,36 @@ UInteractableComponent::UInteractableComponent()
 
 void UInteractableComponent::Interact(const AGGJ_ObviouslyCharacter* PlayerCharacter, UPrimitiveComponent* Comp, const FVector& HitLocation, const FRotator& HitRotation)
 {
-	PlayerCharacter->PhysicsHandle->GrabComponentAtLocationWithRotation(Comp, NAME_None,  HitLocation, HitRotation);
+	switch (InteractionType) {
+	case EInteractionType::EPickup:
+		PlayerCharacter->PhysicsHandle->GrabComponentAtLocationWithRotation(Comp, NAME_None,  HitLocation, HitRotation);
+		bIsActive = true;
+		break;
+		
+	case EInteractionType::EPress:
+		for (auto triggerable : Triggerables)
+		{
+			if (triggerable->GetClass()->ImplementsInterface(UTriggerableInterface::StaticClass())) {
+				ITriggerableInterface::Execute_Activate(triggerable);
+			}
+		}
+		bIsActive = true;
+		break;
+		
+	case EInteractionType::EPressRandom:
+		if (!Triggerables.IsEmpty())
+		{
+			const auto Triggerable = Triggerables[FMath::RandRange(0, Triggerables.Num() -1)];
+
+			if (Triggerable->GetClass()->ImplementsInterface(UTriggerableInterface::StaticClass())) {
+				ITriggerableInterface::Execute_Activate(Triggerable);
+			}
+		}
+
+		break;
+	}
+
+
 }
 
 // Called when the game starts
