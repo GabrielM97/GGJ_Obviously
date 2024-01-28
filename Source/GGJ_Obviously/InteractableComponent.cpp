@@ -7,6 +7,7 @@
 #include "TriggerableInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values for this component's properties
 UInteractableComponent::UInteractableComponent()
@@ -51,7 +52,16 @@ void UInteractableComponent::Interact(AGGJ_ObviouslyCharacter* PlayerCharacter, 
 		break;
 	}
 
-
+	if (InteractSound)
+	{
+		FTimerHandle Handle;
+		GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateLambda([&]
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), InteractSound, 1, 1, 0);
+		}), 1, false, Delay);
+		
+	}
+	
 }
 
 // Called when the game starts

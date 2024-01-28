@@ -7,6 +7,7 @@
 #include "InteractableComponent.generated.h"
 
 
+class USoundCue;
 class AGGJ_ObviouslyCharacter;
 class UWidgetComponent;
 
@@ -98,7 +99,14 @@ public:
 	UPROPERTY(EditAnywhere, meta=(EditConditionHides = bPress ))
 	TArray<AActor*> Triggerables;
 
+	UPROPERTY(EditAnywhere)
+	USoundCue* InteractSound;
+
+	UPROPERTY(EditAnywhere)
+	float Delay;
+	
 	bool bIsActive = false;
+	
 	
 protected:
 	// Called when the game starts
