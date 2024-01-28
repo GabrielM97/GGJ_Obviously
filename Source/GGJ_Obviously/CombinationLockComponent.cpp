@@ -14,9 +14,7 @@ UCombinationLockComponent::UCombinationLockComponent()
 
 void UCombinationLockComponent::OnCombinationAttempt(bool IsSuccesful, UCombinationLockWidget* WidgetUI)
 {
-	
 }
-
 
 // Called when the game starts
 void UCombinationLockComponent::BeginPlay()
