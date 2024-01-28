@@ -14,6 +14,17 @@ UCombinationLockComponent::UCombinationLockComponent()
 
 void UCombinationLockComponent::OnCombinationAttempt(bool IsSuccesful, UCombinationLockWidget* WidgetUI)
 {
+	if (IsSuccesful) 
+	{
+		UInteractableComponent* Interactable = Cast<UInteractableComponent>(GetOwner()->GetComponentByClass(UInteractableComponent::StaticClass()));
+
+		if (Interactable)
+		{
+			Interactable->OnInteracted.Clear();
+			Interactable->InteractionType = EInteractionType::EPickup;
+			Interactable->bIsActive = false;
+		}
+	}
 }
 
 // Called when the game starts
