@@ -18,6 +18,63 @@ enum class EInteractionType
 	EPressRandom
 };
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnInteracted, FInteractionData);
+
+USTRUCT()
+struct FInteractionData
+{
+	GENERATED_BODY()
+public:
+	FInteractionData()
+	{
+		checkNoEntry();
+	};
+
+	FInteractionData(const FVector SetLocation, const FRotator SetRotation, UPrimitiveComponent* SetPrimitive, AGGJ_ObviouslyCharacter* SetCharacter)
+	{
+		HitLocation = SetLocation;
+		HitRotation = SetRotation;
+		HitPrimitive = SetPrimitive;
+		HitCharacter = SetCharacter;
+	};
+
+	const FVector& GetLocation()
+	{
+		return HitLocation;
+	};
+
+	const FRotator& GetRotation()
+	{
+		return HitRotation;
+	};
+
+	const UPrimitiveComponent* GetPrimitive()
+	{
+		if (!HitPrimitive)
+		{
+			return nullptr;
+		}
+
+		return HitPrimitive.Get();
+	};
+
+	const AGGJ_ObviouslyCharacter* GetCharacter()
+	{
+		if (!HitCharacter)
+		{
+			return nullptr;
+		}
+
+		return HitCharacter.Get();
+	};
+
+private:
+	FVector HitLocation;
+	FRotator HitRotation;
+	TObjectPtr<UPrimitiveComponent> HitPrimitive;
+	TObjectPtr<AGGJ_ObviouslyCharacter> HitCharacter;
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GGJ_OBVIOUSLY_API UInteractableComponent : public UActorComponent
 {
@@ -26,7 +83,9 @@ class GGJ_OBVIOUSLY_API UInteractableComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UInteractableComponent();
-	void Interact(const AGGJ_ObviouslyCharacter* PlayerCharacter, UPrimitiveComponent* Comp, const FVector& HitLocation, const FRotator& HitRotation);
+	void Interact(AGGJ_ObviouslyCharacter* PlayerCharacter, UPrimitiveComponent* Comp, const FVector& HitLocation, const FRotator& HitRotation);
+
+	FOnInteracted OnInteracted;
 
 	UPROPERTY()
 	UWidgetComponent* InteractWidget;

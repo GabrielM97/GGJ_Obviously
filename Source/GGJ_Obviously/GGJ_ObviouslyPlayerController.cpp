@@ -19,6 +19,4 @@ void AGGJ_ObviouslyPlayerController::BeginPlay()
 	}
 
 	Hud = Cast<AObviouslyHud>(GetHUD());
-
-	
 }

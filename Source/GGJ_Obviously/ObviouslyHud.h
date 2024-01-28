@@ -4,9 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "CombinationLockWidget.h"
 #include "ObviouslyHud.generated.h"
 
 class UPlayerHud;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnLockUIUpdate, UCombinationLockWidget*);
+
 /**
  * 
  */
@@ -22,11 +26,19 @@ public:
 	UPROPERTY(EditAnywhere, Category=PlayerHud)
 	TSubclassOf<UPlayerHud> PlayerHudClass;
 
+	UPROPERTY(EditAnywhere, Category = "PlayerHud")
+	TObjectPtr<UCombinationLockWidget> CombinationLockUI;
+
 	UPROPERTY()
 	UPlayerHud* PlayerHud;
 
+	FOnLockUIUpdate LockUIUpdate;
+
 	void SetInteractText(const FText& text);
 	void ToggleInteractUI(ESlateVisibility Visibility);
+
+	void ToggleCombinationLockUI();
+
 protected:
 	virtual void BeginPlay() override;
 };

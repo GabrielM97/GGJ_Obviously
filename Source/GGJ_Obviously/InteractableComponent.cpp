@@ -18,8 +18,11 @@ UInteractableComponent::UInteractableComponent()
 	// ...
 }
 
-void UInteractableComponent::Interact(const AGGJ_ObviouslyCharacter* PlayerCharacter, UPrimitiveComponent* Comp, const FVector& HitLocation, const FRotator& HitRotation)
+void UInteractableComponent::Interact(AGGJ_ObviouslyCharacter* PlayerCharacter, UPrimitiveComponent* Comp, const FVector& HitLocation, const FRotator& HitRotation)
 {
+	FInteractionData Data(HitLocation, HitRotation, Comp, PlayerCharacter);
+	OnInteracted.Broadcast(Data);
+
 	switch (InteractionType) {
 	case EInteractionType::EPickup:
 		PlayerCharacter->PhysicsHandle->GrabComponentAtLocationWithRotation(Comp, NAME_None,  HitLocation, HitRotation);

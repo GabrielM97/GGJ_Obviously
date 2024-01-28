@@ -22,6 +22,38 @@ void AObviouslyHud::ToggleInteractUI(ESlateVisibility Visibility)
 	PlayerHud->InteractionText->SetVisibility(Visibility);
 }
 
+void AObviouslyHud::ToggleCombinationLockUI()
+{
+	APlayerController* PlayerController = GetOwningPlayerController();
+	
+	if (CombinationLockUI) 
+	{
+		if (CombinationLockUI.Get()->GetIsVisible())
+		{
+			CombinationLockUI = CreateWidget<UCombinationLockWidget>(PlayerController, CombinationLockUI.Get()->StaticClass());
+			auto UIWidget = CombinationLockUI.Get(); 
+			UIWidget->Initialize();
+			UIWidget->AddToViewport();
+			LockUIUpdate.Broadcast(UIWidget);
+		}
+		else
+		{
+			if (CombinationLockUI) 
+			{
+				CombinationLockUI.Get()->RemoveFromParent();
+			}
+		}
+	}
+	else 
+	{
+		CombinationLockUI = CreateWidget<UCombinationLockWidget>(PlayerController, CombinationLockUI.Get()->StaticClass());
+		auto UIWidget = CombinationLockUI.Get();
+		UIWidget->Initialize();
+		UIWidget->AddToViewport();
+		LockUIUpdate.Broadcast(UIWidget);
+	}
+}
+
 void AObviouslyHud::BeginPlay()
 {
 	Super::BeginPlay();
@@ -35,4 +67,9 @@ void AObviouslyHud::BeginPlay()
 	
 	PlayerHud = CreateWidget<UPlayerHud>(PlayerController, PlayerHudClass);
 	PlayerHud->AddToViewport();
+
+	CombinationLockUI = CreateWidget<UCombinationLockWidget>(PlayerController, CombinationLockUI.Get()->StaticClass());
+	auto UIWidget = CombinationLockUI.Get();
+	UIWidget->AddToViewport();
+	LockUIUpdate.Broadcast(UIWidget);
 }
