@@ -27,16 +27,15 @@ void UCombinationLockComponent::BeginPlay()
 	Super::BeginPlay();
 
 	UInteractableComponent* Interactable = Cast<UInteractableComponent>(GetOwner()->GetComponentByClass(UInteractableComponent::StaticClass()));
-
-	auto world = GetWorld();
-	if (!world)
-	{
-		auto characterController = static_cast<AGGJ_ObviouslyPlayerController*>(world->GetFirstPlayerController());
-		if (characterController) 
-		{
-			characterController->Hud->LockUIUpdate.AddUObject(this, &UCombinationLockComponent::SubscribeToDelegate);
-		}
-	}
+	
+	// if (auto world = GetWorld())
+	// {
+	// 	auto characterController = static_cast<AGGJ_ObviouslyPlayerController*>(world->GetFirstPlayerController());
+	// 	if (characterController) 
+	// 	{
+	// 		characterController->Hud->LockUIUpdate.AddUObject(this, &UCombinationLockComponent::SubscribeToDelegate);
+	// 	}
+	// }
 
 	if (Interactable) 
 	{
@@ -52,9 +51,13 @@ void UCombinationLockComponent::OpenLockUI(FInteractionData Data)
 		return;
 	}
 
-	auto characterController = static_cast<AGGJ_ObviouslyPlayerController*>(world->GetFirstPlayerController());
-	characterController->Hud->ToggleCombinationLockUI();
+	if (const auto characterController = static_cast<AGGJ_ObviouslyPlayerController*>(world->GetFirstPlayerController())) 
+	{
+		characterController->Hud->LockUIUpdate.AddUObject(this, &UCombinationLockComponent::SubscribeToDelegate);
+		characterController->Hud->ToggleCombinationLockUI();
+	}
 }
+	
 
 void UCombinationLockComponent::SubscribeToDelegate(UCombinationLockWidget* WidgetUI)
 {

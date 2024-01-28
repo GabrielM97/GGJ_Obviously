@@ -27,11 +27,14 @@ public:
 	TSubclassOf<UPlayerHud> PlayerHudClass;
 
 	UPROPERTY(EditAnywhere, Category = "PlayerHud")
-	TObjectPtr<UCombinationLockWidget> CombinationLockUI;
+	TSubclassOf<UCombinationLockWidget> CombinationLockUIClass;
 
 	UPROPERTY()
 	UPlayerHud* PlayerHud;
 
+	UPROPERTY()
+	UCombinationLockWidget* CombinationLockWidget;
+	
 	FOnLockUIUpdate LockUIUpdate;
 
 	void SetInteractText(const FText& text);

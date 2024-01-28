@@ -18,13 +18,16 @@ public:
 	// Sets default values for this component's properties
 	UCombinationLockComponent();
 
+	UFUNCTION()
 	void OnCombinationAttempt(bool IsSuccesful, UUserWidget* WidgetUI);
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
 	void OpenLockUI(FInteractionData Data);
 
+	UFUNCTION()
 	void SubscribeToDelegate(UCombinationLockWidget* WidgetUI);
 };
