@@ -9,9 +9,9 @@ struct FDialogue :  public FTableRowBase
 
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FText> DialogueTexts;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<USoundCue*> SpokenDialogue;
 };
