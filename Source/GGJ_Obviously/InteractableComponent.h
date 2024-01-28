@@ -105,7 +105,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	float Delay;
 	
-	bool bIsActive = false;
+	UPROPERTY(EditAnywhere)
+	bool bIsInteractionActive = false;
 	
 	
 protected:

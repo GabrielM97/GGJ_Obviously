@@ -17,12 +17,11 @@ void UCombinationLockComponent::OnCombinationAttempt(bool IsSuccesful, UCombinat
 	if (IsSuccesful) 
 	{
 		UInteractableComponent* Interactable = Cast<UInteractableComponent>(GetOwner()->GetComponentByClass(UInteractableComponent::StaticClass()));
-
 		if (Interactable)
 		{
 			Interactable->OnInteracted.Clear();
 			Interactable->InteractionType = EInteractionType::EPickup;
-			Interactable->bIsActive = false;
+			Interactable->bIsInteractionActive = false;
 		}
 	}
 }

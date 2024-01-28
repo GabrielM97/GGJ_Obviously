@@ -120,7 +120,7 @@ void AGGJ_ObviouslyCharacter::Tick(float DeltaSeconds)
 				return;
 			}
 
-			if (!bIsGrabbing && !InteractableComponent->bIsActive)
+			if (!bIsGrabbing && !InteractableComponent->bIsInteractionActive)
 			{
 				PC->Hud->SetInteractText( FText::FromString(FString::Printf(TEXT("Press 'E' to interact with %s"), *Out.GetActor()->GetName())));
 				PC->Hud->ToggleInteractUI(ESlateVisibility::SelfHitTestInvisible);

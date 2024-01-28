@@ -36,7 +36,7 @@ void UInteractableComponent::Interact(AGGJ_ObviouslyCharacter* PlayerCharacter, 
 				ITriggerableInterface::Execute_Activate(triggerable);
 			}
 		}
-		bIsActive = true;
+		bIsInteractionActive = true;
 		break;
 		
 	case EInteractionType::EPressRandom:
