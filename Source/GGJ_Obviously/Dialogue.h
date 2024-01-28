@@ -13,5 +13,5 @@ struct FDialogue :  public FTableRowBase
 	TArray<FText> DialogueTexts;
 
 	UPROPERTY(EditAnywhere)
-	USoundCue* SpokenDialogue;
+	TArray<USoundCue*> SpokenDialogue;
 };
