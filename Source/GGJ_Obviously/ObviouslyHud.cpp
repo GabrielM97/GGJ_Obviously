@@ -37,7 +37,6 @@ void AObviouslyHud::ToggleCombinationLockUI()
 		const FInputModeUIOnly UIOnly;
 		PlayerController->SetInputMode(UIOnly);
 		PlayerController->SetShowMouseCursor(true);
-		LockUIUpdate.Broadcast(CombinationLockWidget);
 	}
 	else
 	{
@@ -46,34 +45,6 @@ void AObviouslyHud::ToggleCombinationLockUI()
 		PlayerController->SetInputMode(GameOnly);
 		PlayerController->SetShowMouseCursor(true);
 	}
-	
-	
-	// if (CombinationLockUI) 
-	// {
-	// 	if (CombinationLockUI.Get()->IsVisible())
-	// 	{
-	// 		// CombinationLockUI = CreateWidget<UCombinationLockWidget>(PlayerController, CombinationLockUI.Get()->StaticClass());
-	// 		// auto UIWidget = CombinationLockUI.Get(); 
-	// 		// UIWidget->Initialize();
-	// 		CombinationLockUI.Get()->AddToViewport();
-	// 		LockUIUpdate.Broadcast(CombinationLockUI.Get());
-	// 	}
-	// 	else
-	// 	{
-	// 		if (CombinationLockUI) 
-	// 		{
-	// 			CombinationLockUI.Get()->RemoveFromParent();
-	// 		}
-	// 	}
-	// }
-	// else 
-	// {
-	// 	// CombinationLockUI = CreateWidget<UCombinationLockWidget>(PlayerController, CombinationLockUI.Get()->StaticClass());
-	// 	// auto UIWidget = CombinationLockUI.Get();
-	// 	// UIWidget->Initialize();
-	// 	CombinationLockUI.Get()->AddToViewport();
-	// 	LockUIUpdate.Broadcast(CombinationLockUI.Get());
-	// }
 }
 
 void AObviouslyHud::BeginPlay()
@@ -91,7 +62,5 @@ void AObviouslyHud::BeginPlay()
 	PlayerHud->AddToViewport();
 
 	CombinationLockWidget = CreateWidget<UCombinationLockWidget>(PlayerController, CombinationLockUIClass);
-	// auto UIWidget = CombinationLockUI.Get();
-	// UIWidget->AddToViewport();
-	//LockUIUpdate.Broadcast(CombinationLockUI.Get());
+	CombinationLockWidget->Owner = PlayerController;
 }

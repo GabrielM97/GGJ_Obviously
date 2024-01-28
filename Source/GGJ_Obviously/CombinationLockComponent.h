@@ -19,7 +19,7 @@ public:
 	UCombinationLockComponent();
 
 	UFUNCTION()
-	void OnCombinationAttempt(bool IsSuccesful, UUserWidget* WidgetUI);
+	void OnCombinationAttempt(bool IsSuccesful, UCombinationLockWidget* WidgetUI);
 
 protected:
 	// Called when the game starts
@@ -28,6 +28,6 @@ protected:
 	UFUNCTION()
 	void OpenLockUI(FInteractionData Data);
 
-	UFUNCTION()
-	void SubscribeToDelegate(UCombinationLockWidget* WidgetUI);
+	UPROPERTY()
+	bool IsFirstOpen = true;
 };

@@ -12,12 +12,9 @@ UCombinationLockComponent::UCombinationLockComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UCombinationLockComponent::OnCombinationAttempt(bool IsSuccesful, UUserWidget* WidgetUI)
+void UCombinationLockComponent::OnCombinationAttempt(bool IsSuccesful, UCombinationLockWidget* WidgetUI)
 {
-	if (IsSuccesful) 
-	{
-		WidgetUI->RemoveFromParent();
-	}
+	
 }
 
 
@@ -27,15 +24,6 @@ void UCombinationLockComponent::BeginPlay()
 	Super::BeginPlay();
 
 	UInteractableComponent* Interactable = Cast<UInteractableComponent>(GetOwner()->GetComponentByClass(UInteractableComponent::StaticClass()));
-	
-	// if (auto world = GetWorld())
-	// {
-	// 	auto characterController = static_cast<AGGJ_ObviouslyPlayerController*>(world->GetFirstPlayerController());
-	// 	if (characterController) 
-	// 	{
-	// 		characterController->Hud->LockUIUpdate.AddUObject(this, &UCombinationLockComponent::SubscribeToDelegate);
-	// 	}
-	// }
 
 	if (Interactable) 
 	{
@@ -53,13 +41,11 @@ void UCombinationLockComponent::OpenLockUI(FInteractionData Data)
 
 	if (const auto characterController = static_cast<AGGJ_ObviouslyPlayerController*>(world->GetFirstPlayerController())) 
 	{
-		characterController->Hud->LockUIUpdate.AddUObject(this, &UCombinationLockComponent::SubscribeToDelegate);
 		characterController->Hud->ToggleCombinationLockUI();
+		if (IsFirstOpen) 
+		{
+			characterController->Hud->CombinationLockWidget->CombinationAttempt.AddDynamic(this, &UCombinationLockComponent::OnCombinationAttempt);
+			IsFirstOpen = false;
+		}
 	}
-}
-	
-
-void UCombinationLockComponent::SubscribeToDelegate(UCombinationLockWidget* WidgetUI)
-{
-	WidgetUI->CombinationAttempt.AddDynamic(this, &UCombinationLockComponent::OnCombinationAttempt);
 }

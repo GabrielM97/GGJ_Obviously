@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "CombinationLockWidget.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCombinationAttempt, bool, IsSuccessful, UUserWidget*, Widget);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCombinationAttempt, bool, IsSuccessful, UCombinationLockWidget*, Widget);
 
 /**
  * 
@@ -18,4 +18,7 @@ class GGJ_OBVIOUSLY_API UCombinationLockWidget : public UUserWidget
 public:
 	UPROPERTY(BlueprintCallable)
 	FOnCombinationAttempt CombinationAttempt;
+
+	UPROPERTY(BlueprintReadOnly)
+	APlayerController* Owner;
 };

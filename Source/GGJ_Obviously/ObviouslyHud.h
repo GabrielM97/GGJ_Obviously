@@ -9,8 +9,6 @@
 
 class UPlayerHud;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnLockUIUpdate, UCombinationLockWidget*);
-
 /**
  * 
  */
@@ -34,8 +32,6 @@ public:
 
 	UPROPERTY()
 	UCombinationLockWidget* CombinationLockWidget;
-	
-	FOnLockUIUpdate LockUIUpdate;
 
 	void SetInteractText(const FText& text);
 	void ToggleInteractUI(ESlateVisibility Visibility);
